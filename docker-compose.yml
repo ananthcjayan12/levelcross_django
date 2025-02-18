@@ -19,6 +19,7 @@ services:
       - ALLOWED_HOSTS=localhost,127.0.0.1,*
       - SECRET_KEY=your-secret-key-here
       - PYTHONUNBUFFERED=1
+      - AD_IMAGE_URL=https://levelcrossads.srshti.co.in/Blue%20And%20White%20Modern%20Dental%20Clinic%20Poster.png
     restart: always
 
 volumes:
