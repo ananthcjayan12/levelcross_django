@@ -1,147 +1,141 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<!-- Add this at the top of the content block -->
+<div id="toast" 
+     class="fixed top-20 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out">
+    Train number copied!
+</div>
+
 <div class="space-y-6">
-    <!-- Current Time Display -->
-    <div class="bg-white shadow rounded-lg overflow-hidden">
-        <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">
-                Train Monitoring System
-            </h3>
-            <div class="flex items-center space-x-4">
-                <div class="text-sm text-gray-500">
-                    Day: <span class="font-medium">{{ current_day }}</span>
+    <!-- Header Card -->
+    <div class="bg-white rounded-lg shadow-sm p-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <h1 class="text-xl font-semibold text-gray-900 mb-2 sm:mb-0">
+                Ezhupunna Levelcross Monitor
+            </h1>
+            <div class="flex items-center space-x-4 text-sm">
+                <div class="bg-gray-100 px-3 py-1 rounded-full">
+                    <span class="text-gray-600">{{ current_day }}</span>
                 </div>
-                <div class="text-sm text-gray-500">
-                    Time: <span class="font-medium">{{ current_time }}</span>
+                <div class="bg-gray-100 px-3 py-1 rounded-full">
+                    <span class="text-gray-600">{{ current_time }}</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Past Trains -->
-    <div class="bg-white shadow rounded-lg overflow-hidden">
-        <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">
-                Trains from Past 3 Hours
-            </h3>
-        </div>
-        <div class="px-4 py-5 sm:p-6">
-            {% if past_trains %}
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Train Number</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Station</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Scheduled Time</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Day</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            {% for train in past_trains %}
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ train.train_number }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ train.station }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ train.time|time:"h:i A" }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ train.day_reach_station }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="status-{{ train.train_number }}">Pending</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <button onclick="checkLiveStatus('{{ train.train_number }}')"
-                                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                        Check Status
-                                    </button>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+    <!-- Train Lists -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Past Trains -->
+        <div class="bg-white rounded-lg shadow-sm">
+            <div class="p-4 border-b">
+                <h2 class="text-lg font-medium text-gray-900">Past 3 Hours</h2>
+            </div>
+            <div class="p-4 space-y-4">
+                <!-- From ERS Section -->
+                {% if past_ers_trains %}
+                <div>
+                    <h3 class="text-sm font-medium text-blue-600 mb-3 flex items-center">
+                        <span class="w-2 h-2 rounded-full bg-blue-500 mr-2"></span>
+                        Started from Ernakulam
+                    </h3>
+                    <div class="space-y-3">
+                        {% for train in past_ers_trains %}
+                        <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
+                            <!-- Train card content -->
+                            {% include 'app/includes/train_card.html' with train=train %}
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
-            {% else %}
-                <p class="text-gray-500 text-sm">No trains from the past 3 hours</p>
-            {% endif %}
-        </div>
-    </div>
+                {% endif %}
 
-    <!-- Upcoming Trains -->
-    <div class="bg-white shadow rounded-lg overflow-hidden">
-        <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">
-                Upcoming Trains (Next 30 Minutes)
-            </h3>
-        </div>
-        <div class="px-4 py-5 sm:p-6">
-            {% if upcoming_trains %}
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Train Number</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Station</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Scheduled Time</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Day</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            {% for train in upcoming_trains %}
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ train.train_number }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ train.station }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ train.time|time:"h:i A" }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ train.day_reach_station }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="status-{{ train.train_number }}">Pending</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <button onclick="checkLiveStatus('{{ train.train_number }}')"
-                                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                        Check Status
-                                    </button>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                <!-- From SRT Section -->
+                {% if past_srt_trains %}
+                <div>
+                    <h3 class="text-sm font-medium text-purple-600 mb-3 flex items-center">
+                        <span class="w-2 h-2 rounded-full bg-purple-500 mr-2"></span>
+                        Started from Cherthala
+                    </h3>
+                    <div class="space-y-3">
+                        {% for train in past_srt_trains %}
+                        <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
+                            <!-- Train card content -->
+                            {% include 'app/includes/train_card.html' with train=train %}
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
-            {% else %}
-                <p class="text-gray-500 text-sm">No upcoming trains in the next 30 minutes</p>
-            {% endif %}
+                {% endif %}
+
+                {% if not past_ers_trains and not past_srt_trains %}
+                <div class="text-center py-8 text-gray-500">
+                    No trains from the past 3 hours
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Upcoming Trains -->
+        <div class="bg-white rounded-lg shadow-sm">
+            <div class="p-4 border-b">
+                <h2 class="text-lg font-medium text-gray-900">Next 30 Minutes</h2>
+            </div>
+            <div class="p-4 space-y-4">
+                <!-- From ERS Section -->
+                {% if upcoming_ers_trains %}
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 mb-3">From Ernakulam</h3>
+                    <div class="space-y-3">
+                        {% for train in upcoming_ers_trains %}
+                        <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
+                            <!-- Train card content -->
+                            {% include 'app/includes/train_card.html' with train=train %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- From SRT Section -->
+                {% if upcoming_srt_trains %}
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 mb-3">From Cherthala</h3>
+                    <div class="space-y-3">
+                        {% for train in upcoming_srt_trains %}
+                        <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
+                            <!-- Train card content -->
+                            {% include 'app/includes/train_card.html' with train=train %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if not upcoming_ers_trains and not upcoming_srt_trains %}
+                <div class="text-center py-8 text-gray-500">
+                    No upcoming trains
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block extra_js %}
 <script>
-function checkLiveStatus(trainNumber) {
-    const button = event.target;
-    button.disabled = true;
-    button.classList.add('opacity-75');
-    
-    fetch(`/fetch-live-status/${trainNumber}/`)
-        .then(response => response.json())
-        .then(data => {
-            const statusElement = document.getElementById(`status-${trainNumber}`);
-            if (data.data) {
-                statusElement.textContent = `At ${data.data.current_station_name}`;
-                statusElement.classList.add('text-green-600');
-            } else {
-                statusElement.textContent = 'Status unavailable';
-                statusElement.classList.add('text-yellow-600');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            const statusElement = document.getElementById(`status-${trainNumber}`);
-            statusElement.textContent = 'Error fetching status';
-            statusElement.classList.add('text-red-600');
-        })
-        .finally(() => {
-            button.disabled = false;
-            button.classList.remove('opacity-75');
-        });
+function copyTrainNumber(trainNumber) {
+    // Copy to clipboard
+    navigator.clipboard.writeText(trainNumber).then(() => {
+        // Show toast
+        const toast = document.getElementById('toast');
+        toast.classList.remove('translate-x-full');
+        
+        // Hide toast after 2 seconds
+        setTimeout(() => {
+            toast.classList.add('translate-x-full');
+        }, 2000);
+    });
 }
 
 // Auto-refresh every 5 minutes

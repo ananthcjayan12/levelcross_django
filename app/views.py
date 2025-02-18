@@ -26,7 +26,7 @@ def home(request):
     now = timezone.localtime(timezone.now(), ist)
     
     # Get current day name
-    current_day = now.strftime('%A').upper()  # e.g., 'MONDAY', 'TUESDAY', etc.
+    current_day = now.strftime('%A').upper()
     
     # Get trains from past 3 hours and upcoming 30 minutes
     three_hours_ago = now - timedelta(hours=3)
@@ -35,15 +35,30 @@ def home(request):
     # Create day filter condition
     day_filter = Q(week_day__icontains=current_day) | Q(week_day__iexact='ALL') | Q(week_day__iexact='DAILY')
     
-    # Filter based on local time and day
-    past_trains = Train.objects.filter(
+    # Filter past trains based on direction
+    past_ers_trains = Train.objects.filter(
         time__gte=three_hours_ago.time(),
-        time__lte=now.time()
+        time__lte=now.time(),
+        station='ERS'  # Started from ERS
     ).filter(day_filter)
     
-    upcoming_trains = Train.objects.filter(
+    past_srt_trains = Train.objects.filter(
+        time__gte=three_hours_ago.time(),
+        time__lte=now.time(),
+        station='SRT'  # Started from SRT
+    ).filter(day_filter)
+    
+    # Filter upcoming trains based on direction
+    upcoming_ers_trains = Train.objects.filter(
         time__gte=now.time(),
-        time__lte=thirty_mins_future.time()
+        time__lte=thirty_mins_future.time(),
+        station='ERS'
+    ).filter(day_filter)
+    
+    upcoming_srt_trains = Train.objects.filter(
+        time__gte=now.time(),
+        time__lte=thirty_mins_future.time(),
+        station='SRT'
     ).filter(day_filter)
     
     # Filter out already crossed trains
@@ -51,14 +66,18 @@ def home(request):
         crossed_date=now.date()
     ).values_list('train_id', flat=True)
     
-    past_trains = past_trains.exclude(id__in=crossed_today)
-    upcoming_trains = upcoming_trains.exclude(id__in=crossed_today)
+    past_ers_trains = past_ers_trains.exclude(id__in=crossed_today)
+    past_srt_trains = past_srt_trains.exclude(id__in=crossed_today)
+    upcoming_ers_trains = upcoming_ers_trains.exclude(id__in=crossed_today)
+    upcoming_srt_trains = upcoming_srt_trains.exclude(id__in=crossed_today)
 
     context = {
-        'past_trains': past_trains,
-        'upcoming_trains': upcoming_trains,
+        'past_ers_trains': past_ers_trains,
+        'past_srt_trains': past_srt_trains,
+        'upcoming_ers_trains': upcoming_ers_trains,
+        'upcoming_srt_trains': upcoming_srt_trains,
         'current_time': now.strftime('%I:%M %p'),
-        'current_day': current_day.title(),  # Add current day to context
+        'current_day': current_day.title(),
         'upload_form': CSVUploadForm()
     }
     return render(request, 'app/home.html', context)
