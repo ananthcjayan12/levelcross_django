@@ -8,7 +8,6 @@ services:
                python manage.py collectstatic --noinput &&
                gunicorn core.wsgi:application --bind 0.0.0.0:8000"
     volumes:
-      - static_volume:/app/staticfiles
       - ./data/levelcross_django/csv:/app/data/csv  # For uploaded CSV files
       - ./data/levelcross_django/db:/app/data/db  # For SQLite database
     ports:
@@ -22,5 +21,3 @@ services:
       - AD_IMAGE_URL=https://levelcrossads.srshti.co.in/Blue%20And%20White%20Modern%20Dental%20Clinic%20Poster.png
     restart: always
 
-volumes:
-  static_volume: 
