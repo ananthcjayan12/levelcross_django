@@ -9,6 +9,7 @@ from .forms import CSVUploadForm
 from django.http import JsonResponse
 import pytz
 from django.db.models import Q
+from django.conf import settings
 
 # Keep your existing API constants
 API_URL = "https://irctc1.p.rapidapi.com/api/v1/liveTrainStatus"
