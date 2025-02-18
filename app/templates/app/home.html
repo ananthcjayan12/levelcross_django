@@ -25,101 +25,52 @@
         </div>
     </div>
 
-    <!-- Train Lists -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Past Trains -->
-        <div class="bg-white rounded-lg shadow-sm">
-            <div class="p-4 border-b">
-                <h2 class="text-lg font-medium text-gray-900">Past 3 Hours</h2>
-            </div>
-            <div class="p-4 space-y-4">
-                <!-- From ERS Section -->
-                {% if past_ers_trains %}
-                <div>
-                    <h3 class="text-sm font-medium text-blue-600 mb-3 flex items-center">
-                        <span class="w-2 h-2 rounded-full bg-blue-500 mr-2"></span>
-                        Started from Ernakulam
-                    </h3>
-                    <div class="space-y-3">
-                        {% for train in past_ers_trains %}
-                        <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
-                            <!-- Train card content -->
-                            {% include 'app/includes/train_card.html' with train=train %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
+    <!-- Past ERS Trains -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Past ERS Trains</h2>
+        {% include 'app/train_list.html' with trains=past_ers_trains %}
+    </div>
 
-                <!-- From SRT Section -->
-                {% if past_srt_trains %}
-                <div>
-                    <h3 class="text-sm font-medium text-purple-600 mb-3 flex items-center">
-                        <span class="w-2 h-2 rounded-full bg-purple-500 mr-2"></span>
-                        Started from Cherthala
-                    </h3>
-                    <div class="space-y-3">
-                        {% for train in past_srt_trains %}
-                        <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
-                            <!-- Train card content -->
-                            {% include 'app/includes/train_card.html' with train=train %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
+    <!-- Banner Ad 1 -->
+    <div class="mb-8">
+        <img src="{{ MIDDLE_AD_IMAGE_URL_1 }}" 
+             alt="Middle Advertisement 1" 
+             class="w-full rounded-lg shadow-lg"
+             onerror="this.style.display='none';">
+    </div>
 
-                {% if not past_ers_trains and not past_srt_trains %}
-                <div class="text-center py-8 text-gray-500">
-                    No trains from the past 3 hours
-                </div>
-                {% endif %}
-            </div>
-        </div>
+    <!-- Past SRT Trains -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Past SRT Trains</h2>
+        {% include 'app/train_list.html' with trains=past_srt_trains %}
+    </div>
 
-        <!-- Upcoming Trains -->
-        <div class="bg-white rounded-lg shadow-sm">
-            <div class="p-4 border-b">
-                <h2 class="text-lg font-medium text-gray-900">Next 30 Minutes</h2>
-            </div>
-            <div class="p-4 space-y-4">
-                <!-- From ERS Section -->
-                {% if upcoming_ers_trains %}
-                <div>
-                    <h3 class="text-sm font-medium text-gray-500 mb-3">From Ernakulam</h3>
-                    <div class="space-y-3">
-                        {% for train in upcoming_ers_trains %}
-                        <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
-                            <!-- Train card content -->
-                            {% include 'app/includes/train_card.html' with train=train %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
+    <!-- Banner Ad 2 -->
+    <div class="mb-8">
+        <img src="{{ MIDDLE_AD_IMAGE_URL_2 }}" 
+             alt="Middle Advertisement 2" 
+             class="w-full rounded-lg shadow-lg"
+             onerror="this.style.display='none';">
+    </div>
 
-                <!-- From SRT Section -->
-                {% if upcoming_srt_trains %}
-                <div>
-                    <h3 class="text-sm font-medium text-gray-500 mb-3">From Cherthala</h3>
-                    <div class="space-y-3">
-                        {% for train in upcoming_srt_trains %}
-                        <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors">
-                            <!-- Train card content -->
-                            {% include 'app/includes/train_card.html' with train=train %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
+    <!-- Upcoming ERS Trains -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Upcoming ERS Trains</h2>
+        {% include 'app/train_list.html' with trains=upcoming_ers_trains %}
+    </div>
 
-                {% if not upcoming_ers_trains and not upcoming_srt_trains %}
-                <div class="text-center py-8 text-gray-500">
-                    No upcoming trains
-                </div>
-                {% endif %}
-            </div>
-        </div>
+    <!-- Banner Ad 3 -->
+    <div class="mb-8">
+        <img src="{{ MIDDLE_AD_IMAGE_URL_3 }}" 
+             alt="Middle Advertisement 3" 
+             class="w-full rounded-lg shadow-lg"
+             onerror="this.style.display='none';">
+    </div>
+
+    <!-- Upcoming SRT Trains -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Upcoming SRT Trains</h2>
+        {% include 'app/train_list.html' with trains=upcoming_srt_trains %}
     </div>
 </div>
 

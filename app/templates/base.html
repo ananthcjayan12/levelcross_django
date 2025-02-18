@@ -78,6 +78,14 @@
     </div>
     {% endif %}
 
+    <!-- After navigation and before main content -->
+    <div class="container mx-auto px-4 py-6 max-w-6xl">
+        <img src="{{ TOP_AD_IMAGE_URL }}" 
+             alt="Top Advertisement" 
+             class="w-full rounded-lg shadow-lg mb-6"
+             onerror="this.style.display='none';">
+    </div>
+
     <!-- Main Content -->
     <main class="flex-grow container mx-auto px-4 py-6 max-w-6xl">
         {% block content %}{% endblock %}

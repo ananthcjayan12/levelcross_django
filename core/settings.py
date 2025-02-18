@@ -140,4 +140,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AD_IMAGE_URL = os.environ.get('AD_IMAGE_URL', 'https://your-r2-public-url.r2.dev/dental-ad.jpg')
+# Ad Image URLs
+AD_IMAGE_URL = os.environ.get('AD_IMAGE_URL', 'https://levelcrossads.srshti.co.in/Blue%20And%20White%20Modern%20Dental%20Clinic%20Poster.webp')
+TOP_AD_IMAGE_URL = os.environ.get('TOP_AD_IMAGE_URL', 'https://levelcrossads.srshti.co.in/banner1.webp')
+MIDDLE_AD_IMAGE_URL_1 = os.environ.get('MIDDLE_AD_IMAGE_URL_1', 'https://levelcrossads.srshti.co.in/banner2.webp')
+MIDDLE_AD_IMAGE_URL_2 = os.environ.get('MIDDLE_AD_IMAGE_URL_2', 'https://levelcrossads.srshti.co.in/banner3.webp')
+MIDDLE_AD_IMAGE_URL_3 = os.environ.get('MIDDLE_AD_IMAGE_URL_3', 'https://levelcrossads.srshti.co.in/banner4.webp')
