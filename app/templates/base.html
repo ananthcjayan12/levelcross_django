@@ -6,34 +6,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ezhupunna Levelcross</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        .hover-shadow {
+            transition: all 0.2s ease;
+        }
+        .hover-shadow:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
     <!-- Navigation -->
-    <nav class="bg-indigo-600 sticky top-0 z-50">
+    <nav class="gradient-bg sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo/Title Section -->
                 <div class="flex-shrink-0">
-                    <span class="text-white text-xl font-bold">Ezhupunna</span>
-                    <span class="text-white text-xl font-bold block sm:inline">Levelcross</span>
+                    <span class="text-white text-xl font-bold tracking-tight">Ezhupunna</span>
+                    <span class="text-white/80 text-xl font-medium block sm:inline">Levelcross</span>
                 </div>
                 
                 <!-- Navigation Links -->
                 <div class="hidden sm:block">
                     <div class="ml-10 flex items-baseline space-x-4">
                         <a href="{% url 'home' %}" 
-                           class="{% if request.path == '/' %}bg-indigo-700{% endif %} text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors">
+                           class="{% if request.path == '/' %}bg-white/10{% endif %} text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/20 transition-colors">
                             Dashboard
                         </a>
                         <a href="{% url 'upload_csv' %}" 
-                           class="{% if request.path == '/upload/' %}bg-indigo-700{% endif %} text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors">
+                           class="{% if request.path == '/upload/' %}bg-white/10{% endif %} text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/20 transition-colors">
                             Upload
                         </a>
                     </div>
@@ -43,7 +56,7 @@
                 <div class="sm:hidden">
                     <button type="button" 
                             onclick="toggleMobileMenu()"
-                            class="text-white hover:bg-indigo-700 p-2 rounded-md">
+                            class="text-white hover:bg-white/10 p-2 rounded-lg transition-colors">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                         </svg>
@@ -55,11 +68,11 @@
             <div class="sm:hidden hidden" id="mobile-menu">
                 <div class="px-2 pt-2 pb-3 space-y-1">
                     <a href="{% url 'home' %}" 
-                       class="{% if request.path == '/' %}bg-indigo-700{% endif %} text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-700">
+                       class="{% if request.path == '/' %}bg-white/10{% endif %} text-white block px-3 py-2 rounded-lg text-base font-medium hover:bg-white/20 transition-colors">
                         Dashboard
                     </a>
                     <a href="{% url 'upload_csv' %}" 
-                       class="{% if request.path == '/upload/' %}bg-indigo-700{% endif %} text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-700">
+                       class="{% if request.path == '/upload/' %}bg-white/10{% endif %} text-white block px-3 py-2 rounded-lg text-base font-medium hover:bg-white/20 transition-colors">
                         Upload
                     </a>
                 </div>
@@ -71,7 +84,10 @@
     {% if messages %}
     <div class="fixed top-16 right-4 z-50">
         {% for message in messages %}
-        <div class="animate-fade-in-down bg-white rounded-lg shadow-lg mt-4 p-4 {% if message.tags == 'success' %}text-green-700 border-l-4 border-green-500{% elif message.tags == 'error' %}text-red-700 border-l-4 border-red-500{% else %}text-yellow-700 border-l-4 border-yellow-500{% endif %}">
+        <div class="animate-fade-in-down bg-white rounded-lg card-shadow mt-4 p-4 
+                    {% if message.tags == 'success' %}text-emerald-700 border-l-4 border-emerald-500
+                    {% elif message.tags == 'error' %}text-rose-700 border-l-4 border-rose-500
+                    {% else %}text-amber-700 border-l-4 border-amber-500{% endif %}">
             <p class="text-sm font-medium">{{ message }}</p>
         </div>
         {% endfor %}
@@ -82,7 +98,7 @@
     <div class="container mx-auto px-4 py-6 max-w-6xl">
         <img src="{{ TOP_AD_IMAGE_URL }}" 
              alt="Top Advertisement" 
-             class="w-full rounded-lg shadow-lg mb-6"
+             class="w-full rounded-lg card-shadow mb-6 hover-shadow"
              onerror="this.style.display='none';">
     </div>
 
@@ -95,7 +111,7 @@
     <div class="container mx-auto px-4 py-6 max-w-6xl">
         <img src="{{ AD_IMAGE_URL }}" 
              alt="Smile Craft Dental Clinic" 
-             class="w-full rounded-lg shadow-lg"
+             class="w-full rounded-lg card-shadow hover-shadow"
              onerror="this.style.display='none';">
     </div>
 
