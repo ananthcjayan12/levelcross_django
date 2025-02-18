@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Train Monitoring System</h2>
+    
+    <!-- CSV Upload Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            Upload Train Schedule
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'upload_csv' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ upload_form }}
+                <button type="submit" class="btn btn-primary mt-2">Upload</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Past Trains -->
+    <div class="card mb-4">
+        <div class="card-header">
+            Trains from Past 3 Hours
+        </div>
+        <div class="card-body">
+            {% if past_trains %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Train Number</th>
+                                <th>Station</th>
+                                <th>Scheduled Time</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for train in past_trains %}
+                            <tr>
+                                <td>{{ train.train_number }}</td>
+                                <td>{{ train.station }}</td>
+                                <td>{{ train.time }}</td>
+                                <td id="status-{{ train.train_number }}">Pending</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" 
+                                            onclick="checkLiveStatus('{{ train.train_number }}')">
+                                        Check Status
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>No trains from the past 3 hours</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Upcoming Trains -->
+    <div class="card">
+        <div class="card-header">
+            Upcoming Trains (Next 30 Minutes)
+        </div>
+        <div class="card-body">
+            {% if upcoming_trains %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Train Number</th>
+                                <th>Station</th>
+                                <th>Scheduled Time</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for train in upcoming_trains %}
+                            <tr>
+                                <td>{{ train.train_number }}</td>
+                                <td>{{ train.station }}</td>
+                                <td>{{ train.time }}</td>
+                                <td id="status-{{ train.train_number }}">Pending</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" 
+                                            onclick="checkLiveStatus('{{ train.train_number }}')">
+                                        Check Status
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>No upcoming trains in the next 30 minutes</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function checkLiveStatus(trainNumber) {
+    fetch(`/fetch-live-status/${trainNumber}/`)
+        .then(response => response.json())
+        .then(data => {
+            const statusElement = document.getElementById(`status-${trainNumber}`);
+            if (data.data) {
+                statusElement.textContent = `At ${data.data.current_station_name}`;
+            } else {
+                statusElement.textContent = 'Status unavailable';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const statusElement = document.getElementById(`status-${trainNumber}`);
+            statusElement.textContent = 'Error fetching status';
+        });
+}
+
+// Auto-refresh every 5 minutes
+setInterval(() => {
+    location.reload();
+}, 300000);
+</script>
+{% endblock %} 

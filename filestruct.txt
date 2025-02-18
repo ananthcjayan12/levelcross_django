@@ -1,0 +1,22 @@
+.
+├── app
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── tests.py
+│   └── views.py
+├── core
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── .gitattributes
+├── .gitignore
+├── filestruct.txt
+├── manage.py
+├── test.py
+└── train_list.csv
+
+3 directories, 17 files
