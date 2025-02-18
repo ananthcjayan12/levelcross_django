@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: >
+      bash -c "python manage.py migrate --noinput &&
+               python manage.py collectstatic --noinput &&
+               gunicorn core.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - static_volume:/app/staticfiles
+      - ./data/levelcross_django/csv:/app/data/csv  # For uploaded CSV files
+      - ./data/levelcross_django/db:/app/data/db  # For SQLite database
+    ports:
+      - "8024:8000"
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=core.settings
+      - ALLOWED_HOSTS=localhost,127.0.0.1,*
+      - SECRET_KEY=your-secret-key-here
+      - PYTHONUNBUFFERED=1
+    restart: always
+
+volumes:
+  static_volume: 
