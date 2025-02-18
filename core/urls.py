@@ -21,6 +21,7 @@ from app import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    path('upload-csv/', views.upload_csv, name='upload_csv'),
+    path('upload/', views.upload_page, name='upload_csv'),
+    path('upload/process/', views.upload_csv, name='process_csv'),
     path('fetch-live-status/<str:train_number>/', views.fetch_live_status, name='fetch_live_status'),
 ]

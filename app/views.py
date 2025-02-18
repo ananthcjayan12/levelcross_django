@@ -7,6 +7,8 @@ import requests
 from .models import Train, CrossedTrain
 from .forms import CSVUploadForm
 from django.http import JsonResponse
+import pytz
+from django.db.models import Q
 
 # Keep your existing API constants
 API_URL = "https://irctc1.p.rapidapi.com/api/v1/liveTrainStatus"
@@ -19,21 +21,30 @@ HEADERS = {
 }
 
 def home(request):
-    now = timezone.now()
+    # Get current time in IST
+    ist = pytz.timezone('Asia/Kolkata')
+    now = timezone.localtime(timezone.now(), ist)
+    
+    # Get current day name
+    current_day = now.strftime('%A').upper()  # e.g., 'MONDAY', 'TUESDAY', etc.
     
     # Get trains from past 3 hours and upcoming 30 minutes
     three_hours_ago = now - timedelta(hours=3)
     thirty_mins_future = now + timedelta(minutes=30)
     
+    # Create day filter condition
+    day_filter = Q(week_day__icontains=current_day) | Q(week_day__iexact='ALL') | Q(week_day__iexact='DAILY')
+    
+    # Filter based on local time and day
     past_trains = Train.objects.filter(
         time__gte=three_hours_ago.time(),
         time__lte=now.time()
-    )
+    ).filter(day_filter)
     
     upcoming_trains = Train.objects.filter(
         time__gte=now.time(),
         time__lte=thirty_mins_future.time()
-    )
+    ).filter(day_filter)
     
     # Filter out already crossed trains
     crossed_today = CrossedTrain.objects.filter(
@@ -46,6 +57,8 @@ def home(request):
     context = {
         'past_trains': past_trains,
         'upcoming_trains': upcoming_trains,
+        'current_time': now.strftime('%I:%M %p'),
+        'current_day': current_day.title(),  # Add current day to context
         'upload_form': CSVUploadForm()
     }
     return render(request, 'app/home.html', context)
@@ -156,3 +169,9 @@ def debug_csv(request):
             except Exception as e:
                 return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+# Add new view for upload page
+def upload_page(request):
+    return render(request, 'app/upload.html', {
+        'upload_form': CSVUploadForm()
+    })
