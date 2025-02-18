@@ -138,3 +138,5 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AD_IMAGE_URL = os.environ.get('AD_IMAGE_URL', 'https://your-r2-public-url.r2.dev/dental-ad.jpg')
