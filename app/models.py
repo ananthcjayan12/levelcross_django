@@ -25,3 +25,14 @@ class CrossedTrain(models.Model):
 
     class Meta:
         unique_together = ['train', 'crossed_date']
+
+class TrainStatus(models.Model):
+    train = models.ForeignKey(Train, on_delete=models.CASCADE)
+    current_station = models.CharField(max_length=200)
+    status_as_of = models.CharField(max_length=100)
+    last_update = models.DateTimeField(auto_now=True)
+    delay = models.IntegerField(default=0)
+    passed_ezhupunna = models.BooleanField(default=False)
+    
+    class Meta:
+        get_latest_by = 'last_update'

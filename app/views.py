@@ -4,7 +4,7 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 import pandas as pd
 import requests
-from .models import Train, CrossedTrain
+from .models import Train, CrossedTrain, TrainStatus
 from .forms import CSVUploadForm
 from django.http import JsonResponse
 import pytz
@@ -157,16 +157,28 @@ def upload_csv(request):
 
 def fetch_live_status(request, train_number):
     try:
-        # Calculate start_day based on day_reach_station
         train = Train.objects.get(train_number=train_number)
+        recent_status = TrainStatus.objects.filter(train=train).last()
+
+        # If we know train has passed Ezhupunna, return that info
+        if recent_status and recent_status.passed_ezhupunna:
+            return JsonResponse({
+                'success': True,
+                'passed_ezhupunna': True,
+                'current_station': recent_status.current_station,
+                'status_as_of': recent_status.status_as_of,
+                'last_update': recent_status.last_update.strftime('%I:%M %p'),
+                'delay': recent_status.delay
+            })
+
+        # Otherwise fetch new status
         try:
             start_day = int(train.day_reach_station) - 1
         except:
             start_day = 0
 
-        # Get API key from settings
         api_key = settings.RAPIDAPI_KEY
-        if not api_key or api_key == 'your-api-key-here':
+        if not api_key:
             return JsonResponse({
                 'success': False,
                 'error': 'API key not configured'
@@ -177,7 +189,6 @@ def fetch_live_status(request, train_number):
             'x-rapidapi-host': "irctc1.p.rapidapi.com"
         }
         
-        # Construct URL with parameters
         url = f"https://irctc1.p.rapidapi.com/api/v1/liveTrainStatus?trainNo={train_number}&startDay={start_day}"
         
         response = requests.get(url, headers=headers)
@@ -185,13 +196,42 @@ def fetch_live_status(request, train_number):
         
         if data.get('status') and data.get('data'):
             train_data = data['data']
+            
+            # Check if train has passed Ezhupunna by looking at upcoming stations
+            passed_ezhupunna = True  # Assume passed until we find EZP in upcoming
+            ezp_found = False
+            
+            # Check upcoming stations and their non_stops
+            for station in train_data.get('upcoming_stations', []):
+                if station.get('station_code') == 'EZP':
+                    passed_ezhupunna = False
+                    ezp_found = True
+                    break
+                # Check non-stops
+                for non_stop in station.get('non_stops', []):
+                    if non_stop.get('station_code') == 'EZP':
+                        passed_ezhupunna = False
+                        ezp_found = True
+                        break
+                if ezp_found:
+                    break
+            
+            # Store the new status
+            status = TrainStatus.objects.create(
+                train=train,
+                current_station=train_data.get('current_station_name', ''),
+                status_as_of=train_data.get('status_as_of', ''),
+                delay=train_data.get('delay', 0),
+                passed_ezhupunna=passed_ezhupunna
+            )
+            
             return JsonResponse({
                 'success': True,
-                'current_station': train_data.get('current_station_name', ''),
-                'status_as_of': train_data.get('status_as_of', ''),
-                'last_update': train_data.get('update_time', ''),
-                'eta': train_data.get('eta', ''),
-                'delay': train_data.get('delay', 0)
+                'passed_ezhupunna': passed_ezhupunna,
+                'current_station': status.current_station,
+                'status_as_of': status.status_as_of,
+                'last_update': status.last_update.strftime('%I:%M %p'),
+                'delay': status.delay
             })
             
         return JsonResponse({

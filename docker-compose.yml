@@ -4,7 +4,8 @@ services:
   web:
     build: .
     command: >
-      bash -c "python manage.py migrate --noinput &&
+      bash -c "python manage.py makemigrations &&
+               python manage.py migrate --noinput &&
                python manage.py collectstatic --noinput &&
                gunicorn core.wsgi:application --bind 0.0.0.0:8000"
     volumes:
