@@ -13,13 +13,6 @@ from django.conf import settings
 
 # Keep your existing API constants
 API_URL = "https://irctc1.p.rapidapi.com/api/v1/liveTrainStatus"
-HEADERS = {
-    "Accept": "application/json",
-    "Content-Type": "application/json",
-    "x-rapidapi-ua": "RapidAPI-Playground",
-    "x-rapidapi-key": "YOUR_API_KEY",
-    "x-rapidapi-host": "irctc1.p.rapidapi.com",
-}
 
 def home(request):
     # Get current time in IST
@@ -163,16 +156,56 @@ def upload_csv(request):
     return redirect('home')
 
 def fetch_live_status(request, train_number):
-    """API endpoint to fetch live status for a specific train"""
     try:
-        params = {
-            "trainNo": train_number,
-            "startDay": "0"
+        # Calculate start_day based on day_reach_station
+        train = Train.objects.get(train_number=train_number)
+        try:
+            start_day = int(train.day_reach_station) - 1
+        except:
+            start_day = 0
+
+        # Get API key from settings
+        api_key = settings.RAPIDAPI_KEY
+        if not api_key or api_key == 'your-api-key-here':
+            return JsonResponse({
+                'success': False,
+                'error': 'API key not configured'
+            })
+
+        headers = {
+            'x-rapidapi-key': api_key,
+            'x-rapidapi-host': "irctc1.p.rapidapi.com"
         }
-        response = requests.get(API_URL, headers=HEADERS, params=params)
-        return JsonResponse(response.json())
+        
+        # Construct URL with parameters
+        url = f"https://irctc1.p.rapidapi.com/api/v1/liveTrainStatus?trainNo={train_number}&startDay={start_day}"
+        
+        response = requests.get(url, headers=headers)
+        data = response.json()
+        
+        if data.get('status') and data.get('data'):
+            train_data = data['data']
+            return JsonResponse({
+                'success': True,
+                'current_station': train_data.get('current_station_name', ''),
+                'status_as_of': train_data.get('status_as_of', ''),
+                'last_update': train_data.get('update_time', ''),
+                'eta': train_data.get('eta', ''),
+                'delay': train_data.get('delay', 0)
+            })
+            
+        return JsonResponse({
+            'success': False, 
+            'error': 'No data available',
+            'raw_response': data
+        })
+        
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+        return JsonResponse({
+            'success': False, 
+            'error': str(e),
+            'type': str(type(e))
+        })
 
 def debug_csv(request):
     if request.method == 'POST':

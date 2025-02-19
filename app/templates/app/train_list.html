@@ -17,8 +17,18 @@
                             {% else %}bg-purple-100 text-purple-700{% endif %}">
                             {{ train.station }}
                         </span>
+                        <button onclick="checkTrainStatus('{{ train.train_number }}')"
+                                class="px-3 py-1 text-xs font-medium text-indigo-600 hover:text-indigo-800 border border-indigo-200 hover:border-indigo-300 rounded-full transition-colors">
+                            Check Status
+                        </button>
                     </div>
                     <p class="text-sm text-gray-600">{{ train.week_day }}</p>
+                    <p class="text-xs text-gray-500">Day {{ train.day_reach_station }}</p>
+                    
+                    <!-- Live Status Section (Hidden by default) -->
+                    <div id="status-{{ train.train_number }}" class="hidden mt-3 p-3 bg-gray-100 rounded-lg">
+                        <div class="animate-pulse">Loading...</div>
+                    </div>
                 </div>
                 <div class="text-right">
                     <div class="text-xl font-bold text-gray-900">{{ train.time|time:"H:i" }}</div>
@@ -37,4 +47,51 @@
             <p class="text-sm text-gray-400">No trains available</p>
         </div>
     </div>
-{% endif %} 
+{% endif %}
+
+<script>
+function checkTrainStatus(trainNumber) {
+    const statusDiv = document.getElementById(`status-${trainNumber}`);
+    statusDiv.classList.remove('hidden');
+    
+    fetch(`/fetch-live-status/${trainNumber}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                statusDiv.innerHTML = `
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-700">Current Station:</span>
+                            <span class="text-sm text-gray-600">${data.current_station}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-700">Status:</span>
+                            <span class="text-sm text-gray-600">${data.status_as_of}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-700">Delay:</span>
+                            <span class="text-sm ${data.delay > 0 ? 'text-red-600' : 'text-green-600'}">
+                                ${data.delay} minutes
+                            </span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                statusDiv.innerHTML = `
+                    <div class="text-sm text-red-600">
+                        <p>Unable to fetch status: ${data.error}</p>
+                        ${data.raw_response ? `<p class="text-xs mt-1">Details: ${JSON.stringify(data.raw_response)}</p>` : ''}
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            statusDiv.innerHTML = `
+                <div class="text-sm text-red-600">
+                    Error fetching status. Please try again.
+                    <p class="text-xs mt-1">${error.toString()}</p>
+                </div>
+            `;
+        });
+}
+</script> 

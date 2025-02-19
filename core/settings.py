@@ -146,3 +146,5 @@ TOP_AD_IMAGE_URL = os.environ.get('TOP_AD_IMAGE_URL', 'https://levelcrossads.srs
 MIDDLE_AD_IMAGE_URL_1 = os.environ.get('MIDDLE_AD_IMAGE_URL_1', 'https://levelcrossads.srshti.co.in/banner2.webp')
 MIDDLE_AD_IMAGE_URL_2 = os.environ.get('MIDDLE_AD_IMAGE_URL_2', 'https://levelcrossads.srshti.co.in/banner3.webp')
 MIDDLE_AD_IMAGE_URL_3 = os.environ.get('MIDDLE_AD_IMAGE_URL_3', 'https://levelcrossads.srshti.co.in/banner4.webp')
+
+RAPIDAPI_KEY = os.environ.get('RAPIDAPI_KEY')

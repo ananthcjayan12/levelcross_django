@@ -23,5 +23,6 @@ services:
       - MIDDLE_AD_IMAGE_URL_1=https://levelcrossads.srshti.co.in/banner.webp
       - MIDDLE_AD_IMAGE_URL_2=https://levelcrossads.srshti.co.in/banner.webp
       - MIDDLE_AD_IMAGE_URL_3=https://levelcrossads.srshti.co.in/banner.webp
+      - RAPIDAPI_KEY=${RAPIDAPI_KEY}
     restart: always
 
