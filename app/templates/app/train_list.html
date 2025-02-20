@@ -1,64 +1,73 @@
 {% if trains %}
-    <div class="space-y-3">
+    <div class="space-y-4">
         {% for train in trains %}
-        <div class="bg-gray-50/50 rounded-lg p-4 hover:bg-gray-50 transition-all hover-shadow" id="train-card-{{ train.train_number }}">
-            <div class="flex justify-between items-center">
-                <div class="space-y-1">
-                    <div class="flex items-center space-x-3">
-                        <button onclick="copyTrainNumber('{{ train.train_number }}')" 
-                                class="text-lg font-semibold text-gray-900 hover:text-indigo-600 transition-colors flex items-center space-x-2">
-                            <span>{{ train.train_number }}</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
-                            </svg>
-                        </button>
-                        <span class="px-2 py-1 text-xs font-medium rounded-full 
-                            {% if train.station == 'ERS' %}bg-blue-100 text-blue-700
-                            {% else %}bg-purple-100 text-purple-700{% endif %}">
+        <div class="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200" id="train-card-{{ train.train_number }}">
+            <div class="flex justify-between items-start">
+                <!-- Left Section -->
+                <div class="space-y-3">
+                    <!-- Train Number and Station -->
+                    <div class="flex items-center gap-3">
+                        <div class="flex items-center">
+                            <button onclick="copyTrainNumber('{{ train.train_number }}')" 
+                                    class="text-xl font-bold text-gray-800 hover:text-indigo-600 transition-colors flex items-center gap-2">
+                                <span>{{ train.train_number }}</span>
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <span class="px-3 py-1 text-sm font-medium rounded-full 
+                            {% if train.station == 'ERS' %}bg-blue-50 text-blue-700 border border-blue-200
+                            {% else %}bg-purple-50 text-purple-700 border border-purple-200{% endif %}">
                             {{ train.station }}
                         </span>
                         {% with last_status=train.trainstatus_set.last %}
                             {% if not last_status or not last_status.passed_ezhupunna %}
                                 <button onclick="checkTrainStatus('{{ train.train_number }}')"
                                         id="status-btn-{{ train.train_number }}"
-                                        class="px-3 py-1 text-xs font-medium text-indigo-600 hover:text-indigo-800 border border-indigo-200 hover:border-indigo-300 rounded-full transition-colors">
+                                        class="px-4 py-1 text-sm font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-full transition-all duration-200">
                                     Check Status
                                 </button>
                             {% endif %}
                         {% endwith %}
                     </div>
-                    <p class="text-sm text-gray-600">{{ train.week_day }}</p>
-                    <p class="text-xs text-gray-500">Day {{ train.day_reach_station }}</p>
-                    
+
+                    <!-- Schedule Info -->
+                    <div class="flex items-center gap-4 text-sm">
+                        <div class="flex items-center gap-2 text-gray-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span>{{ train.week_day }}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-gray-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Day {{ train.day_reach_station }}</span>
+                        </div>
+                    </div>
+
                     <!-- Status Section -->
-                    <div id="status-{{ train.train_number }}" class="mt-3 p-3 bg-gray-100 rounded-lg {% if not train.trainstatus_set.last %}hidden{% endif %}">
+                    <div id="status-{{ train.train_number }}" class="{% if not train.trainstatus_set.last %}hidden{% endif %}">
                         {% with last_status=train.trainstatus_set.last %}
                             {% if last_status %}
-                                <div class="space-y-2">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm font-medium text-gray-700">Last Station:</span>
-                                        <span class="text-sm text-gray-600">{{ last_status.current_station }}</span>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm font-medium text-gray-700">Status:</span>
-                                        <span class="text-sm {% if last_status.delay > 0 %}text-red-600{% else %}text-green-600{% endif %}">
-                                            {{ last_status.delay_status|default:"Right Time" }}
-                                        </span>
-                                    </div>
-                                    <div class="flex items-center justify-between text-xs text-gray-500">
-                                        <span>Last Updated:</span>
-                                        <span>{{ last_status.last_update|time:"h:i A" }}</span>
-                                    </div>
-                                    <div class="text-xs text-gray-400 mt-1">
-                                        {{ last_status.status_as_of }}
-                                    </div>
+                                <div class="flex items-center gap-3 text-gray-600 bg-gray-50 px-4 py-2 rounded-lg">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    <span class="text-sm">{{ last_status.current_station }}</span>
+                                    <span class="text-xs text-gray-400 ml-auto">{{ last_status.last_update|time:"h:i A" }}</span>
                                 </div>
                             {% endif %}
                         {% endwith %}
                     </div>
                 </div>
-                <div class="text-right">
-                    <div class="text-xl font-bold text-gray-900">{{ train.time|time:"H:i" }}</div>
+
+                <!-- Right Section - Time -->
+                <div class="text-right bg-gray-50 px-4 py-2 rounded-lg">
+                    <div class="text-2xl font-bold text-gray-800">{{ train.time|time:"H:i" }}</div>
                     <div class="text-sm text-gray-500">Expected</div>
                 </div>
             </div>
@@ -66,12 +75,12 @@
         {% endfor %}
     </div>
 {% else %}
-    <div class="bg-gray-50/50 rounded-lg p-6">
-        <div class="text-center text-gray-500">
-            <svg class="w-8 h-8 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="bg-white rounded-xl p-8 shadow-sm">
+        <div class="text-center">
+            <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p class="text-sm text-gray-400">No trains available</p>
+            <p class="text-gray-500">No trains available</p>
         </div>
     </div>
 {% endif %}
@@ -102,26 +111,11 @@ function checkTrainStatus(trainNumber) {
             .then(data => {
                 if (data.success) {
                     if (data.completed) {
-                        // Show final status
+                        // Show simplified status
                         statusDiv.innerHTML = `
-                            <div class="space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm font-medium text-gray-700">Last Station:</span>
-                                    <span class="text-sm text-gray-600">${data.current_station}</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm font-medium text-gray-700">Status:</span>
-                                    <span class="text-sm ${data.delay > 0 ? 'text-red-600' : 'text-green-600'}">
-                                        ${data.delay_status || 'Right Time'}
-                                    </span>
-                                </div>
-                                <div class="flex items-center justify-between text-xs text-gray-500">
-                                    <span>Last Updated:</span>
-                                    <span>${data.last_update}</span>
-                                </div>
-                                <div class="text-xs text-gray-400 mt-1">
-                                    ${data.status_as_of}
-                                </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Last seen at ${data.current_station}</span>
+                                <span class="text-xs text-gray-400">${data.last_update}</span>
                             </div>
                         `;
                     } else {
@@ -134,7 +128,6 @@ function checkTrainStatus(trainNumber) {
                     statusDiv.innerHTML = `
                         <div class="text-sm text-red-600">
                             <p>Unable to fetch status: ${data.error}</p>
-                            ${data.raw_response ? `<p class="text-xs mt-1">Details: ${JSON.stringify(data.raw_response)}</p>` : ''}
                         </div>
                     `;
                 }
@@ -143,7 +136,6 @@ function checkTrainStatus(trainNumber) {
                 statusDiv.innerHTML = `
                     <div class="text-sm text-red-600">
                         Error fetching status. Please try again.
-                        <p class="text-xs mt-1">${error.toString()}</p>
                     </div>
                 `;
             });
@@ -157,33 +149,17 @@ function checkTrainStatus(trainNumber) {
             if (data.success && !data.completed && data.task_id) {
                 pollStatus(data.task_id);
             } else if (data.success && data.completed) {
-                // Show the status immediately if we have it
+                // Show simplified status
                 statusDiv.innerHTML = `
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium text-gray-700">Last Station:</span>
-                            <span class="text-sm text-gray-600">${data.current_station}</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium text-gray-700">Status:</span>
-                            <span class="text-sm ${data.delay > 0 ? 'text-red-600' : 'text-green-600'}">
-                                ${data.delay_status || 'Right Time'}
-                            </span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs text-gray-500">
-                            <span>Last Updated:</span>
-                            <span>${data.last_update}</span>
-                        </div>
-                        <div class="text-xs text-gray-400 mt-1">
-                            ${data.status_as_of}
-                        </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-600">Last seen at ${data.current_station}</span>
+                        <span class="text-xs text-gray-400">${data.last_update}</span>
                     </div>
                 `;
             } else {
                 statusDiv.innerHTML = `
                     <div class="text-sm text-red-600">
                         <p>Unable to start status check: ${data.error}</p>
-                        ${data.raw_response ? `<p class="text-xs mt-1">Details: ${JSON.stringify(data.raw_response)}</p>` : ''}
                     </div>
                 `;
             }
@@ -192,7 +168,6 @@ function checkTrainStatus(trainNumber) {
             statusDiv.innerHTML = `
                 <div class="text-sm text-red-600">
                     Error initiating status check. Please try again.
-                    <p class="text-xs mt-1">${error.toString()}</p>
                 </div>
             `;
         });
