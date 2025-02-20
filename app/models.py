@@ -32,7 +32,6 @@ class TrainStatus(models.Model):
     status_as_of = models.CharField(max_length=100)
     last_update = models.DateTimeField(auto_now=True)
     delay = models.IntegerField(default=0)
-    passed_ezhupunna = models.BooleanField(default=False)
     
     class Meta:
         get_latest_by = 'last_update'

@@ -174,8 +174,7 @@ def fetch_live_status(request, train_number):
                     train=train,
                     current_station=result.get('last_station', 'Unknown'),
                     status_as_of=result.get('last_updated', ''),
-                    delay=0 if result.get('delay_status') == 'Right Time' else 15,
-                    passed_ezhupunna=False
+                    delay=0 if result.get('delay_status') == 'Right Time' else 15
                 )
                 
                 return JsonResponse({

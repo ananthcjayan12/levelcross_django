@@ -21,15 +21,12 @@
                             {% else %}bg-purple-50 text-purple-700 border border-purple-200{% endif %}">
                             {{ train.station }}
                         </span>
-                        {% with last_status=train.trainstatus_set.last %}
-                            {% if not last_status or not last_status.passed_ezhupunna %}
-                                <button onclick="checkTrainStatus('{{ train.train_number }}')"
-                                        id="status-btn-{{ train.train_number }}"
-                                        class="px-4 py-1 text-sm font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-full transition-all duration-200">
-                                    Check Status
-                                </button>
-                            {% endif %}
-                        {% endwith %}
+                        <!-- Always show Check Status button -->
+                        <button onclick="checkTrainStatus('{{ train.train_number }}')"
+                                id="status-btn-{{ train.train_number }}"
+                                class="px-4 py-1 text-sm font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-full transition-all duration-200">
+                            Check Status
+                        </button>
                     </div>
 
                     <!-- Schedule Info -->
