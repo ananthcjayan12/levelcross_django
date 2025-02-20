@@ -158,91 +158,82 @@ def upload_csv(request):
 def fetch_live_status(request, train_number):
     try:
         train = Train.objects.get(train_number=train_number)
-        recent_status = TrainStatus.objects.filter(train=train).last()
+        task_id = request.GET.get('task_id')
 
-        # If we know train has passed Ezhupunna, return that info
-        if recent_status and recent_status.passed_ezhupunna:
-            return JsonResponse({
-                'success': True,
-                'passed_ezhupunna': True,
-                'current_station': recent_status.current_station,
-                'status_as_of': recent_status.status_as_of,
-                'last_update': recent_status.last_update.strftime('%I:%M %p'),
-                'delay': recent_status.delay
-            })
+        # If task_id is provided, check the status
+        if task_id:
+            task_status_url = f"https://trainstatus.srshti.co.in/task-status/{task_id}"
+            status_response = requests.get(task_status_url)
+            status_data = status_response.json()
 
-        # Otherwise fetch new status
+            if status_data.get('status') == 'SUCCESS':
+                result = status_data.get('result', {}).get('data', {}).get('current_status', {})
+                
+                # Store the status
+                status = TrainStatus.objects.create(
+                    train=train,
+                    current_station=result.get('last_station', 'Unknown'),
+                    status_as_of=result.get('last_updated', ''),
+                    delay=0 if result.get('delay_status') == 'Right Time' else 15,
+                    passed_ezhupunna=False
+                )
+                
+                return JsonResponse({
+                    'success': True,
+                    'completed': True,
+                    'current_station': status.current_station,
+                    'status_as_of': status.status_as_of,
+                    'last_update': status.last_update.strftime('%I:%M %p'),
+                    'delay': status.delay,
+                    'delay_status': result.get('delay_status', '')
+                })
+            
+            elif status_data.get('status') in ['STARTED', 'PENDING', 'Processing']:
+                return JsonResponse({
+                    'success': True,
+                    'completed': False,
+                    'message': 'Still processing...'
+                })
+            
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'error': f'Task failed with status: {status_data.get("status")}',
+                    'raw_response': status_data
+                })
+
+        # If no task_id, start new request
         try:
-            start_day = int(train.day_reach_station) - 1
+            start_day = int(train.day_reach_station)
         except:
             start_day = 0
 
-        api_key = settings.RAPIDAPI_KEY
-        if not api_key:
-            return JsonResponse({
-                'success': False,
-                'error': 'API key not configured'
-            })
-
-        headers = {
-            'x-rapidapi-key': api_key,
-            'x-rapidapi-host': "irctc1.p.rapidapi.com"
+        url = f"https://trainstatus.srshti.co.in/train-status"
+        params = {
+            'train_number': train_number,
+            'day': start_day
         }
         
-        url = f"https://irctc1.p.rapidapi.com/api/v1/liveTrainStatus?trainNo={train_number}&startDay={start_day}"
+        response = requests.get(url, params=params)
+        initial_data = response.json()
         
-        response = requests.get(url, headers=headers)
-        data = response.json()
-        
-        if data.get('status') and data.get('data'):
-            train_data = data['data']
-            
-            # Check if train has passed Ezhupunna by looking at upcoming stations
-            passed_ezhupunna = True  # Assume passed until we find EZP in upcoming
-            ezp_found = False
-            
-            # Check upcoming stations and their non_stops
-            for station in train_data.get('upcoming_stations', []):
-                if station.get('station_code') == 'EZP':
-                    passed_ezhupunna = False
-                    ezp_found = True
-                    break
-                # Check non-stops
-                for non_stop in station.get('non_stops', []):
-                    if non_stop.get('station_code') == 'EZP':
-                        passed_ezhupunna = False
-                        ezp_found = True
-                        break
-                if ezp_found:
-                    break
-            
-            # Store the new status
-            status = TrainStatus.objects.create(
-                train=train,
-                current_station=train_data.get('current_station_name', ''),
-                status_as_of=train_data.get('status_as_of', ''),
-                delay=train_data.get('delay', 0),
-                passed_ezhupunna=passed_ezhupunna
-            )
-            
+        if initial_data.get('status') == 'Processing' and initial_data.get('task_id'):
             return JsonResponse({
                 'success': True,
-                'passed_ezhupunna': passed_ezhupunna,
-                'current_station': status.current_station,
-                'status_as_of': status.status_as_of,
-                'last_update': status.last_update.strftime('%I:%M %p'),
-                'delay': status.delay
+                'completed': False,
+                'task_id': initial_data['task_id'],
+                'message': 'Request initiated'
             })
             
         return JsonResponse({
-            'success': False, 
-            'error': 'No data available',
-            'raw_response': data
+            'success': False,
+            'error': 'Invalid initial response',
+            'raw_response': initial_data
         })
         
     except Exception as e:
         return JsonResponse({
-            'success': False, 
+            'success': False,
             'error': str(e),
             'type': str(type(e))
         })

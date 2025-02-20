@@ -1,0 +1,38 @@
+//https://trainstatus.srshti.co.in/train-status?train_number=16308&day=1
+{
+    "status": "Processing",
+    "status_url": "/task-status/ac5f83a0-df7a-455e-b872-e52812d03f5a",
+    "task_id": "ac5f83a0-df7a-455e-b872-e52812d03f5a"
+}
+
+https: //trainstatus.srshti.co.in/task-status/ac5f83a0-df7a-455e-b872-e52812d03f5a
+
+{
+    "message": "Task completed successfully",
+    "result": {
+        "data": {
+            "current_status": {
+                "delay_status": "Right Time",
+                "last_station": "Alleppey",
+                "last_updated": "Last Updated: 20 Feb 2025 13:05, (Disclaimer: This train running information is not affiliated with or endorsed by Indian Railways or IRCTC.)"
+            },
+            "train_number": "16308"
+        },
+        "status": "success",
+        "task_id": "ac5f83a0-df7a-455e-b872-e52812d03f5a"
+    },
+    "status": "SUCCESS",
+    "task_id": "ac5f83a0-df7a-455e-b872-e52812d03f5a"
+}
+
+
+//https://trainstatus.srshti.co.in/train-status?train_number=16308&day=1
+{
+    "status": "Processing",
+    "status_url": "/task-status/ac5f83a0-df7a-455e-b872-e52812d03f5a",
+    "task_id": "ac5f83a0-df7a-455e-b872-e52812d03f5a"
+}
+
+https://trainstatus.srshti.co.in/task-status/e2b0767f-0cc6-499f-b08f-d788ee885eb5
+
+{"message":"Task is running","status":"STARTED","task_id":"e2b0767f-0cc6-499f-b08f-d788ee885eb5"}
