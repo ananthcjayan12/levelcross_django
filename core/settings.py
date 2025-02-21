@@ -28,7 +28,7 @@ DEBUG = int(os.environ.get('DEBUG', 0))
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
-
+CSRF_TRUSTED_ORIGINS = ['https://*.127.0.0.1', 'https://*.localhost', 'https://*.srshti.co.in']
 # Application definition
 
 INSTALLED_APPS = [
