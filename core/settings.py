@@ -148,3 +148,44 @@ MIDDLE_AD_IMAGE_URL_2 = os.environ.get('MIDDLE_AD_IMAGE_URL_2', 'https://levelcr
 MIDDLE_AD_IMAGE_URL_3 = os.environ.get('MIDDLE_AD_IMAGE_URL_3', 'https://levelcrossads.srshti.co.in/banner4.webp')
 
 RAPIDAPI_KEY = os.environ.get('RAPIDAPI_KEY')
+
+# Logging Configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'django_debug.log'),
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'app': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

@@ -7,7 +7,7 @@ services:
       bash -c "python manage.py makemigrations &&
                python manage.py migrate --noinput &&
                python manage.py collectstatic --noinput &&
-               gunicorn core.wsgi:application --bind 0.0.0.0:8000"
+               gunicorn core.wsgi:application --bind 0.0.0.0:8000 --log-level debug --access-logfile - --error-logfile -"
     volumes:
       - ./data/levelcross_django/csv:/app/data/csv  # For uploaded CSV files
       - ./data/levelcross_django/db:/app/data/db  # For SQLite database

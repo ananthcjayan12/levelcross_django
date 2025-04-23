@@ -10,11 +10,16 @@ from django.http import JsonResponse
 import pytz
 from django.db.models import Q
 from django.conf import settings
+import logging
 
 # Keep your existing API constants
 API_URL = "https://irctc1.p.rapidapi.com/api/v1/liveTrainStatus"
 
+# Create a logger for this app
+logger = logging.getLogger('app')
+
 def home(request):
+    print("home view called")
     # Get current time in IST
     ist = pytz.timezone('Asia/Kolkata')
     now = timezone.localtime(timezone.now(), ist)
@@ -77,16 +82,22 @@ def home(request):
     return render(request, 'app/home.html', context)
 
 def upload_csv(request):
+    logger.debug("upload_csv view called")
     if request.method == 'POST':
+        logger.debug("Processing POST request")
         form = CSVUploadForm(request.POST, request.FILES)
         if form.is_valid():
+            logger.debug("Form is valid")
             csv_file = request.FILES['csv_file']
             try:
+                logger.debug(f"Processing CSV file: {csv_file.name}")
                 # Read CSV with more flexible column handling and force string type for Train Number
                 df = pd.read_csv(csv_file, dtype={'Train Number': str})
+                logger.debug(f"CSV loaded, found {len(df)} rows")
                 
                 # Clean column names: strip whitespace and convert to title case
                 df.columns = df.columns.str.strip().str.title()
+                logger.debug(f"Columns after cleaning: {list(df.columns)}")
                 
                 # Map expected column names
                 column_mapping = {
@@ -106,6 +117,7 @@ def upload_csv(request):
                 
                 # Rename columns based on mapping
                 df = df.rename(columns=column_mapping)
+                logger.debug(f"Columns after mapping: {list(df.columns)}")
                 
                 # Convert all columns to string type except Time
                 for column in df.columns:
@@ -116,9 +128,12 @@ def upload_csv(request):
                 for column in df.columns:
                     if column != 'Time':  # Skip time column
                         df[column] = df[column].str.strip()
+                logger.debug("Data cleaned")
 
                 # Process each row
-                for _, row in df.iterrows():
+                success_count = 0
+                error_count = 0
+                for idx, row in df.iterrows():
                     try:
                         # Clean and format time
                         time_str = str(row['Time']).strip()
@@ -137,21 +152,27 @@ def upload_csv(request):
                                 'direction': row.get('Direction', 'ERS-SRT')
                             }
                         )
+                        success_count += 1
                     except Exception as row_error:
+                        logger.error(f"Error processing row {idx} for train {row.get('Train_Number', 'unknown')}: {str(row_error)}")
+                        error_count += 1
                         messages.warning(
                             request, 
                             f"Error processing row for train {row.get('Train_Number', 'unknown')}: {str(row_error)}"
                         )
                         continue
 
+                logger.debug(f"CSV processing complete. Successfully processed {success_count} rows with {error_count} errors.")
                 messages.success(request, 'CSV file uploaded successfully!')
                 
             except Exception as e:
+                logger.error(f"Error processing CSV: {str(e)}")
                 messages.error(
                     request, 
                     f'Error processing CSV: {str(e)}. Expected columns: Train Number, Station, Time, WeekDay, Weekly, Day_reach_station'
                 )
         else:
+            logger.warning(f"Form validation failed. Errors: {form.errors}")
             messages.error(request, 'Invalid form submission.')
     return redirect('home')
 

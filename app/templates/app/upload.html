@@ -7,7 +7,7 @@
             Upload Train Schedule
         </h1>
         <p class="mt-2 text-sm text-gray-600">
-            Upload CSV file containing train schedules for Ezhupunna Levelcross
+            Upload CSV file containisssng train schedules for Ezhupunna Levelcross
         </p>
     </div>
 
@@ -21,7 +21,7 @@
             </p>
         </div>
         <div class="px-4 py-5 sm:p-6">
-            <form method="post" action="{% url 'upload_csv' %}" enctype="multipart/form-data" class="space-y-4">
+            <form method="post" action="{% url 'process_csv' %}" enctype="multipart/form-data" class="space-y-4">
                 {% csrf_token %}
                 <div>
                     <label class="block text-sm font-medium text-gray-700">
