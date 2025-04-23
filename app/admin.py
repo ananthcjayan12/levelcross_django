@@ -5,6 +5,7 @@ from .models import Train, CrossedTrain
 class TrainAdmin(admin.ModelAdmin):
     list_display = ['train_number', 'station', 'time', 'week_day', 'direction']
     search_fields = ['train_number', 'station']
+    list_filter = ['week_day', 'station', 'direction']
 
 @admin.register(CrossedTrain)
 class CrossedTrainAdmin(admin.ModelAdmin):
