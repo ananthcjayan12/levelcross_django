@@ -1,7 +1,8 @@
 {% if trains %}
     <div class="space-y-4">
         {% for train in trains %}
-        <div class="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200" id="train-card-{{ train.train_number }}">
+        <div 
+            class="{% if train.id in scraped_today_ids %}bg-green-50 hover:bg-green-100{% else %}bg-white{% endif %} rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200" id="train-card-{{ train.train_number }}">
             <div class="flex justify-between items-start">
                 <!-- Left Section -->
                 <div class="space-y-3">
@@ -55,7 +56,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     <span class="text-sm">{{ last_status.current_station }}</span>
-                                    <span class="text-xs text-gray-400 ml-auto">{{ last_status.last_update|time:"h:i A" }}</span>
+                                    <span class="text-xs text-gray-400 ml-auto">{{ last_status.last_update|date:"F j, Y, h:i A" }}</span>
                                 </div>
                             {% endif %}
                         {% endwith %}
@@ -64,6 +65,7 @@
 
                 <!-- Right Section - Time -->
                 <div class="text-right bg-gray-50 px-4 py-2 rounded-lg">
+                    <div class="text-xs text-gray-500">{{ current_datetime|date:"F j, Y" }}</div>
                     <div class="text-2xl font-bold text-gray-800">{{ train.time|time:"H:i" }}</div>
                     <div class="text-sm text-gray-500">Expected</div>
                 </div>

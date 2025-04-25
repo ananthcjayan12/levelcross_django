@@ -65,6 +65,11 @@ def home(request):
         crossed_date=now.date()
     ).values_list('train_id', flat=True)
     
+    # Identify trains whose status has been fetched (scraped) today
+    scraped_today_ids = TrainStatus.objects.filter(
+        last_update__date=now.date()
+    ).values_list('train_id', flat=True)
+    
     past_ers_trains = past_ers_trains.exclude(id__in=crossed_today)
     past_srt_trains = past_srt_trains.exclude(id__in=crossed_today)
     upcoming_ers_trains = upcoming_ers_trains.exclude(id__in=crossed_today)
@@ -77,6 +82,8 @@ def home(request):
         'upcoming_srt_trains': upcoming_srt_trains,
         'current_time': now.strftime('%I:%M %p'),
         'current_day': current_day.title(),
+        'scraped_today_ids': list(scraped_today_ids),
+        'current_datetime': now,
         'upload_form': CSVUploadForm()
     }
     return render(request, 'app/home.html', context)
