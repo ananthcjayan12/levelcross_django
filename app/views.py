@@ -112,7 +112,8 @@ def upload_csv(request):
                     'Weekly': 'Weekly',
                     'Day_Reach_Station': 'Day_reach_station',
                     'Day Reach Station': 'Day_reach_station',
-                    'Direction': 'Direction'
+                    'Direction': 'Direction',
+                    'Dir': 'Direction'
                 }
                 
                 # Rename columns based on mapping
