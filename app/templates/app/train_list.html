@@ -47,8 +47,9 @@
                     </div>
 
                     <!-- Status Section -->
-                    <div id="status-{{ train.train_number }}" class="{% if not train.trainstatus_set.last %}hidden{% endif %}">
-                        {% with last_status=train.trainstatus_set.last %}
+                    {% with statuses=train.trainstatus_set.all|dictsortreversed:"last_update" %}
+                    <div id="status-{{ train.train_number }}" class="{% if not statuses|first %}hidden{% endif %}">
+                        {% with last_status=statuses|first %}
                             {% if last_status %}
                                 <div class="flex items-center gap-3 text-gray-600 bg-gray-50 px-4 py-2 rounded-lg">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,11 +57,12 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                     <span class="text-sm">{{ last_status.current_station }}</span>
-                                    <span class="text-xs text-gray-400 ml-auto">{{ last_status.last_update|date:"F j, Y, h:i A" }}</span>
+                                    <span class="text-xs text-gray-400 ml-auto">{{ last_status.status_as_of }}</span>
                                 </div>
                             {% endif %}
                         {% endwith %}
                     </div>
+                    {% endwith %}
                 </div>
 
                 <!-- Right Section - Time -->

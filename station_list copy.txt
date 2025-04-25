@@ -1,0 +1,189 @@
+station_code          station_name
+        KHED                  KHED
+         ANO                ANJANI
+         CHI               CHIPLUN
+        KMAH               KAMATHE
+         SVX               SAVARDA
+        AVRD          ARAVALI ROAD
+        KDVI               KADAVAI
+         SGR      SANGMESHWAR ROAD
+         UKC                 UKSHI
+        BOKE                 BHOKE
+          RN             RATNAGIRI
+         NIV               NIVASAR
+        ADVI               ADAVALI
+        VRLI              VERAVALI
+         VID              VILAVADE
+        SUAL               SAUNDAL
+        RAJP          RAJAPUR ROAD
+        KRPN       KHAREPATAN ROAD
+         VBW        VAIBHAVWADI RD
+        ACRN               ACHIRNE
+         NAN         NANDGAON ROAD
+         KKW             KANKAVALI
+        SNDD            SINDHUDURG
+        KUDL                 KUDAL
+        ZARP                 ZARAP
+         SWV       SAWANTWADI ROAD
+        MADR                MADURE
+        PERN                PERNEM
+        THVM                THIVIM
+        KRMI               KARMALI
+         VEN                 VERNA
+         MJO               MAJORDA
+        SRVX              SURAVALI
+         MAO         MADGAON (GOA)
+        BLLI                 BALLI
+         CNO               CANCONA
+         LOL                LOLIEM
+          AT                ASNOTI
+        KAWR                KARWAR
+         HAA               HARWADA
+        ANKL                ANKOLA
+         GOK          GOKARNA ROAD
+        MRJN                MIRJAN
+          KT                 KUMTA
+         HNA              HONNAVAR
+        MANK                 MANKI
+        MRDW            MURDESHWAR
+        CTTP        CHITRAPUR HALT
+        BTJL               BHATKAL
+        SHMI               SHIROOR
+        BYNR BYNDOOR MOOKAMBIKA RD
+        BIJR                BIJOOR
+         SEN              SENAPURA
+        KUDA             KUNDAPURA
+         BKJ                BARKUR
+          UD                 UDUPI
+         INJ               INNANJE
+         PDD             PADUBIDRI
+        NAND              NANDIKUR
+        MULK                 MULKI
+          SL             SURATHKAL
+         TOK                THOKUR
+        JOKT               JOKATTE
+        KULA           KULASHEKARA
+        PADL    PADIL BYPASS CABIN
+        MAJN          MANGALORE JN
+        NTVT           NETHRAVATHI
+        TKOT              TOKKOTTU
+         ULL                 ULLAL
+         MJS            MANJESHWAR
+         UAA                UPPALA
+         KMQ                KUMBLA
+         KGQ             KASARAGOD
+        KLAD          KALANAD HALT
+         KQK             KOTIKULAM
+         BFR            BEKAL FORT
+         KZE             KANHANGAD
+         NLE             NILESHWAR
+         CHV            CHARVATTUR
+        CDRA              CHANDERA
+         TKQ             TRIKARPUR
+         PAY              PAYYANUR
+         ELM               ELIMALA
+         PAZ             PAYANGADI
+         KPQ            KANNAPURAM
+        PPNS          PAPPINISSERY
+        VAPM          VALAPATTANAM
+         CQL             CHIRAKKAL
+         CAN                KANNUR
+          CS          KANNUR SOUTH
+         ETK               ETAKKOT
+         DMD             DHARMADAM
+         TLY            THALASSERY
+         JGE JAGANNATH TEMPLE GATE
+        MAHE                  MAHE
+        MUKE               MUKKALI
+         NAU        NADAPURAM ROAD
+         BDJ              VADAKARA
+         IGL               IRINGAL
+        PYOL               PAYYOLI
+         TKT              TIKKOTTI
+         VEK           VELLARAKKAD
+         QLD              QUILANDI
+         CMC           CHEMANCHERI
+         ETR               ELATTUR
+          WH             WEST HILL
+         VLL              VELLAYIL
+         CLT             KOZHIKODE
+         KUL               KALLAYI
+          FK                 FEROK
+          KN             KADALUNDI
+         VLI            VALLIKUNNU
+         PGI          PARPANANGADI
+          TA                 TANUR
+         TIR                 TIRUR
+         TUA           TIRUNNAVAYA
+         KTU           KUTTIPPURAM
+         PEU            PERSSANNUR
+         PUM           PALLIPPURAM
+        KODN             KODUMUNDA
+         PTB              PATTAMBI
+        KRKD              KARAKKAD
+         SRR           SHORANUR JN
+        SRRB      SHORANUR B CABIN
+         VTK       VALLATHOL NAGAR
+         MUC            MULLURKARA
+         WKI          WADAKANCHERI
+         MGK     MULANGUNNATHUKAVU
+         PNQ    THRISSUR PUNKUNNAM
+         TCR              THRISSUR
+         OLR   THRISSUR OLLUR HALT
+         PUK               PUDUKAD
+         NYI               NELLAYI
+         IJK          IRINJALAKUDA
+         CKI             CHALAKUDI
+        DINR          DIVINE NAGAR
+        KRAN        KORATTI ANGADI
+         KUC            KARUKKUTTY
+         AFK              ANGAMALI
+         CWR              CHOVVARA
+         AWY                 ALUVA
+        KLMR           KALAMASSERY
+         IPL             EDAPPALLY
+         ERN        ERNAKULAM TOWN
+        ERSC    ERNAKULAM JN CABIN
+         ERS          ERNAKULAM JN
+         TNU            TIRUNETTUR
+        KUMM              KUMBALAM
+        AROR            AROOR HALT
+         EZP            EZHUPPUNNA
+        TUVR               TURAVUR
+         VAY               VAYALAR
+        SRTL             CHERTHALA
+        TRVZ             TIRUVIZHA
+        MAKM           MARARIKULAM
+        KAVR          KALAVUR HALT
+        TMPY               TUMBOLI
+        ALLP              ALLEPPEY
+        PNPR             PUNNAPURA
+        AMPA           AMBALAPUZHA
+         TZH               TAKAZHI
+        KVTA        KARUVATTA HALT
+         HAD              HARIPPAD
+        CHPD          CHEPPAD HALT
+         KYJ         KAYANKULAM JN
+         OCR                OCHIRA
+         KPY         KARUNAGAPALLI
+        STKT          SASTHANKOTTA
+         MQO          MUNROTURUTTU
+        PRND               PERINAD
+         QLN             KOLLAM JN
+         IRP            IRAVIPURAM
+         MYY              MAYYANAD
+         PVU               PARAVUR
+         KFI                KAPPIL
+         EVA                EDAVAI
+         VAK      VARKALA SIVAGIRI
+         AMY            AKATHUMURI
+         KVU             KADAKAVUR
+         CRY           CHIRAYINKIL
+         PGZ            PERUNGUZHI
+         MQU         MURUKKAMPUZHA
+         KXP           KANIYAPURAM
+         KZK           KAZHAKUTTAM
+        VELI                  VELI
+        KCVL             KOCHUVELI
+         TVP     TRIVANDRUM PETTAI
+         TVC    TRIVANDRUM CENTRAL

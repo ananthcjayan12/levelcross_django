@@ -21,7 +21,13 @@
                     </svg>
                 </button>
             </div>
-            <div class="text-sm text-gray-500">{{ train.station }}</div>
+            {% with last_status=train.trainstatus_set.order_by('-last_update').first %}
+                {% if last_status %}
+                    <div class="text-sm text-gray-500">{{ last_status.current_station }}</div>
+                {% else %}
+                    <div class="text-sm text-gray-500">{{ train.station }}</div>
+                {% endif %}
+            {% endwith %}
         </div>
     </div>
     <div class="text-right">

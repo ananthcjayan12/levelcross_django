@@ -70,6 +70,7 @@ def home(request):
         last_update__date=now.date()
     ).values_list('train_id', flat=True)
     
+    # Now drop any trains we've already crossed or fetched status for
     past_ers_trains = past_ers_trains.exclude(id__in=crossed_today)
     past_srt_trains = past_srt_trains.exclude(id__in=crossed_today)
     upcoming_ers_trains = upcoming_ers_trains.exclude(id__in=crossed_today)

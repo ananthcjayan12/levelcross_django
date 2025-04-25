@@ -1,0 +1,25 @@
+http://localhost:8024/fetch-live-status/16345/
+
+{
+    "success": true,
+    "completed": false,
+    "task_id": "f4060878-8ef0-4f02-ae47-56bc4aa57dcd",
+    "message": "Request initiated"
+}
+
+http://localhost:8024/fetch-live-status/16345/?task_id=f4060878-8ef0-4f02-ae47-56bc4aa57dcd
+
+{"success": true, "completed": false, "message": "Still processing..."}
+
+http://localhost:8024/fetch-live-status/16345/?task_id=f4060878-8ef0-4f02-ae47-56bc4aa57dcd
+
+
+{
+    "success": true,
+    "completed": true,
+    "current_station": "Harippad",
+    "status_as_of": "Last Updated: 25 Apr 2025 14:58, (Disclaimer: This train running information is not affiliated with or endorsed by Indian Railways or IRCTC.)",
+    "last_update": "09:33 AM",
+    "delay": 15,
+    "delay_status": "Delay by 6 min"
+}

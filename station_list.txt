@@ -1,0 +1,31 @@
+station_code          station_name
+         TCR              THRISSUR
+         OLR   THRISSUR OLLUR HALT
+         PUK               PUDUKAD
+         NYI               NELLAYI
+         IJK          IRINJALAKUDA
+         CKI             CHALAKUDI
+        DINR          DIVINE NAGAR
+        KRAN        KORATTI ANGADI
+         KUC            KARUKKUTTY
+         AFK              ANGAMALI
+         CWR              CHOVVARA
+         AWY                 ALUVA
+        KLMR           KALAMASSERY
+         IPL             EDAPPALLY
+         ERN        ERNAKULAM TOWN
+        ERSC    ERNAKULAM JN CABIN
+         ERS          ERNAKULAM JN
+         TNU            TIRUNETTUR
+        KUMM              KUMBALAM
+        AROR            AROOR HALT
+         EZP            EZHUPPUNNA
+        TUVR               TURAVUR
+         VAY               VAYALAR
+        SRTL             CHERTHALA
+        TRVZ             TIRUVIZHA
+        MAKM           MARARIKULAM
+        KAVR          KALAVUR HALT
+        TMPY               TUMBOLI
+        ALLP              ALLEPPEY
+   
