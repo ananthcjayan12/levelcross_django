@@ -35,3 +35,13 @@ class TrainStatus(models.Model):
     
     class Meta:
         get_latest_by = 'last_update'
+
+class BoatTiming(models.Model):
+    station = models.CharField(max_length=100)
+    time = models.TimeField()
+
+    class Meta:
+        ordering = ['time']
+
+    def __str__(self):
+        return f"{self.station} at {self.time}"

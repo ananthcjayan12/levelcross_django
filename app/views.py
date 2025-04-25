@@ -4,8 +4,8 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 import pandas as pd
 import requests
-from .models import Train, CrossedTrain, TrainStatus
-from .forms import CSVUploadForm
+from .models import Train, CrossedTrain, TrainStatus, BoatTiming
+from .forms import CSVUploadForm, BoatCSVUploadForm
 from django.http import JsonResponse
 import pytz
 from django.db.models import Q
@@ -286,4 +286,70 @@ def debug_csv(request):
 def upload_page(request):
     return render(request, 'app/upload.html', {
         'upload_form': CSVUploadForm()
+    })
+
+# Boat timings upload page
+def boat_upload_page(request):
+    return render(request, 'app/boat_upload.html', {
+        'upload_form': BoatCSVUploadForm()
+    })
+
+# Process boat timings CSV
+def process_boat_csv(request):
+    if request.method == 'POST':
+        form = BoatCSVUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = request.FILES['csv_file']
+            try:
+                df = pd.read_csv(csv_file)
+                # Single-column CSV where header is station name
+                if df.shape[1] == 1:
+                    station = df.columns[0].strip()
+                    for val in df.iloc[:, 0]:
+                        time_str = str(val).strip()
+                        if ':' not in time_str:
+                            time_str = f"{int(float(time_str)):02d}:00"
+                        t = datetime.strptime(time_str, '%H:%M').time()
+                        BoatTiming.objects.update_or_create(
+                            station=station,
+                            time=t
+                        )
+                else:
+                    # Expect columns Station and Time
+                    df.columns = df.columns.str.strip().str.title()
+                    station_col = 'Station' if 'Station' in df.columns else df.columns[0]
+                    time_col = 'Time' if 'Time' in df.columns else df.columns[-1]
+                    for _, row in df.iterrows():
+                        station = str(row[station_col]).strip()
+                        time_str = str(row[time_col]).strip()
+                        if ':' not in time_str:
+                            time_str = f"{int(float(time_str)):02d}:00"
+                        t = datetime.strptime(time_str, '%H:%M').time()
+                        BoatTiming.objects.update_or_create(
+                            station=station,
+                            time=t
+                        )
+                messages.success(request, 'Boat timings uploaded successfully!')
+            except Exception as e:
+                messages.error(request, f'Error processing Boat CSV: {e}')
+        else:
+            messages.error(request, 'Invalid form submission.')
+    return redirect('boat_list')
+
+# Display next 3 boat timings
+def boat_list(request):
+    ist = pytz.timezone('Asia/Kolkata')
+    now = timezone.localtime(timezone.now(), ist)
+    next_boats = BoatTiming.objects.filter(
+        time__gte=now.time()
+    ).order_by('time')[:3]
+    return render(request, 'app/boats.html', {
+        'next_boats': next_boats
+    })
+
+# Display full boat timetable
+def boat_timetable(request):
+    timings = BoatTiming.objects.all()
+    return render(request, 'app/boat_timetable.html', {
+        'timings': timings
     })

@@ -23,5 +23,9 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('upload/', views.upload_page, name='upload_csv'),
     path('upload/process/', views.upload_csv, name='process_csv'),
+    path('boats/upload/', views.boat_upload_page, name='boat_upload'),
+    path('boats/upload/process/', views.process_boat_csv, name='process_boat_csv'),
+    path('boats/next/', views.boat_list, name='boat_list'),
+    path('boats/timetable/', views.boat_timetable, name='boat_timetable'),
     path('fetch-live-status/<str:train_number>/', views.fetch_live_status, name='fetch_live_status'),
 ]

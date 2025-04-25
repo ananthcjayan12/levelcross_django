@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="bg-white rounded-lg shadow-sm p-4">
+        <h1 class="text-xl font-semibold">Upload Boat Timings</h1>
+        <p class="mt-2 text-sm text-gray-600">Upload a CSV file containing boat timings for any station. The CSV can be a single column (times only) where the header is the station name, or two columns: Station and Time.</p>
+    </div>
+
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Boat Schedule Upload</h3>
+        </div>
+        <div class="px-4 py-5 sm:p-6">
+            <form method="post" action="{% url 'process_boat_csv' %}" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Select Boat CSV file</label>
+                    <div class="mt-1 flex items-center">
+                        {{ upload_form.csv_file }}
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" 
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Upload Boat Timings
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 
