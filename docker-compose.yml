@@ -4,7 +4,7 @@ services:
   redis:
     image: redis:6-alpine
     ports:
-      - "6379:6379"
+      - "6380:6379"
 
   web:
     build: .
@@ -20,7 +20,7 @@ services:
       - ./data/csv:/app/data/csv  # For uploaded CSV files
       - ./data/db:/app/data/db  # For SQLite database
     ports:
-      - "8024:8000"
+      - "8040:8000"
     environment:
       - DEBUG=1
       - DJANGO_SETTINGS_MODULE=core.settings
