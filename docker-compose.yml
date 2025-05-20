@@ -9,11 +9,13 @@ services:
   web:
     build: .
     working_dir: /app
-    user: "1000:1000"
+    # Run as root initially to fix permissions
+    user: root
     depends_on:
       - redis
     command: >
       bash -c "mkdir -p /app/data/db /app/data/csv /app/app/static &&
+               chmod -R 777 /app/data &&
                python manage.py makemigrations &&
                python manage.py migrate --noinput &&
                python manage.py collectstatic --noinput &&
@@ -44,11 +46,13 @@ services:
   celery_worker:
     build: .
     working_dir: /app
-    user: "1000:1000"
+    user: root 
     depends_on:
       - web
       - redis
-    command: python -m celery -A core worker --loglevel=info
+    command: >
+      bash -c "chmod -R 777 /app/data &&
+               python -m celery -A core worker --loglevel=info"
     volumes:
       - .:/app:delegated
       - static_volume:/app/staticfiles
@@ -61,11 +65,15 @@ services:
   celery_beat:
     build: .
     working_dir: /app
-    user: "1000:1000"
+    user: root
     depends_on:
       - web
       - redis
-    command: bash -c "python manage.py migrate django_celery_beat && python manage.py migrate --noinput && python -m celery -A core beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    command: >
+      bash -c "chmod -R 777 /app/data &&
+               python manage.py migrate django_celery_beat &&
+               python manage.py migrate --noinput &&
+               python -m celery -A core beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     volumes:
       - .:/app:delegated
       - static_volume:/app/staticfiles
