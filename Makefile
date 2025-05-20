@@ -1,10 +1,11 @@
-.PHONY: build up down logs shell static migrate makemigrations createsuperuser help
+.PHONY: build up down logs shell static migrate makemigrations createsuperuser help restart
 
 help:
 	@echo "Available commands:"
 	@echo "  make build         - Build Docker images"
 	@echo "  make up           - Start the application"
 	@echo "  make down         - Stop the application"
+	@echo "  make restart      - Restart the application"
 	@echo "  make logs         - View application logs"
 	@echo "  make shell        - Open Django shell"
 	@echo "  make static       - Collect static files"
@@ -38,3 +39,6 @@ makemigrations:
 
 createsuperuser:
 	docker-compose exec web python manage.py createsuperuser 
+
+restart: down up
+

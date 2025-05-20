@@ -1,16 +1,24 @@
 version: '3.8'
 
 services:
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+
   web:
     build: .
+    depends_on:
+      - redis
     command: >
       bash -c "python manage.py makemigrations &&
                python manage.py migrate --noinput &&
                python manage.py collectstatic --noinput &&
                gunicorn core.wsgi:application --bind 0.0.0.0:8000 --log-level debug --access-logfile - --error-logfile -"
     volumes:
-      - ./data/levelcross_django/csv:/app/data/csv  # For uploaded CSV files
-      - ./data/levelcross_django/db:/app/data/db  # For SQLite database
+      - ./:/app  # mount code for live reload
+      - ./data/csv:/app/data/csv  # For uploaded CSV files
+      - ./data/db:/app/data/db  # For SQLite database
     ports:
       - "8024:8000"
     environment:
@@ -19,11 +27,44 @@ services:
       - ALLOWED_HOSTS=localhost,127.0.0.1,*
       - SECRET_KEY=your-secret-key-here
       - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
       - AD_IMAGE_URL=https://levelcrossads.srshti.co.in/Blue%20And%20White%20Modern%20Dental%20Clinic%20Poster.webp
       - TOP_AD_IMAGE_URL=https://levelcrossads.srshti.co.in/banner1.webp
       - MIDDLE_AD_IMAGE_URL_1=https://levelcrossads.srshti.co.in/banner.webp
       - MIDDLE_AD_IMAGE_URL_2=https://levelcrossads.srshti.co.in/banner.webp
       - MIDDLE_AD_IMAGE_URL_3=https://levelcrossads.srshti.co.in/banner.webp
       - RAPIDAPI_KEY=${RAPIDAPI_KEY}
+    restart: always
+
+  celery_worker:
+    build: .
+    depends_on:
+      - web
+      - redis
+    command: python -m celery -A core worker --loglevel=info
+    volumes:
+      - ./:/app
+      - ./data/db:/app/data/db
+      - ./data/csv:/app/data/csv
+    environment:
+      - DJANGO_SETTINGS_MODULE=core.settings
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    restart: always
+
+  celery_beat:
+    build: .
+    depends_on:
+      - web
+      - redis
+    command: bash -c "python manage.py migrate django_celery_beat && python manage.py migrate --noinput && python -m celery -A core beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    volumes:
+      - ./:/app
+      - ./data/db:/app/data/db
+      - ./data/csv:/app/data/csv
+    environment:
+      - DJANGO_SETTINGS_MODULE=core.settings
+      - CELERY_BROKER_URL=redis://redis:6379/0
     restart: always
 

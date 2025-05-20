@@ -3,4 +3,7 @@ pandas
 requests
 pytz
 gunicorn
-whitenoise 
+whitenoise
+celery>=5.2
+redis>=4.0
+django-celery-beat>=2.4 
