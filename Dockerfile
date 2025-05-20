@@ -15,22 +15,23 @@ RUN apt-get update \
         libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Create app user
-RUN useradd -ms /bin/bash app_user
-
-# Create necessary directories and set permissions
-RUN mkdir -p /app/data/csv /app/data/db /app/staticfiles \
-    && chown -R app_user:app_user /app
+# Create necessary directories
+RUN mkdir -p /app/data/csv /app/data/db /app/staticfiles /app/app/static \
+    && chown -R 1000:1000 /app \
+    && chmod -R 755 /app
 
 # Install Python dependencies
-COPY --chown=app_user:app_user requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project
-COPY --chown=app_user:app_user . .
+COPY . .
 
-# Switch to app user
-USER app_user
+# Set proper ownership for copied files
+RUN chown -R 1000:1000 /app
+
+# Run as non-root user
+USER 1000
 
 # Expose port
 EXPOSE 8000
