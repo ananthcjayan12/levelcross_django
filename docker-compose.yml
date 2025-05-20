@@ -8,6 +8,7 @@ services:
 
   web:
     build: .
+    working_dir: /app
     depends_on:
       - redis
     command: >
@@ -16,7 +17,7 @@ services:
                python manage.py collectstatic --noinput &&
                gunicorn core.wsgi:application --bind 0.0.0.0:8000 --log-level debug --access-logfile - --error-logfile -"
     volumes:
-      - ./:/app  # mount code for live reload
+      - .:/app  # mount code for live reload
       - ./data/csv:/app/data/csv  # For uploaded CSV files
       - ./data/db:/app/data/db  # For SQLite database
     ports:
@@ -40,12 +41,13 @@ services:
 
   celery_worker:
     build: .
+    working_dir: /app
     depends_on:
       - web
       - redis
     command: python -m celery -A core worker --loglevel=info
     volumes:
-      - ./:/app
+      - .:/app
       - ./data/db:/app/data/db
       - ./data/csv:/app/data/csv
     environment:
@@ -55,12 +57,13 @@ services:
 
   celery_beat:
     build: .
+    working_dir: /app
     depends_on:
       - web
       - redis
     command: bash -c "python manage.py migrate django_celery_beat && python manage.py migrate --noinput && python -m celery -A core beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     volumes:
-      - ./:/app
+      - .:/app
       - ./data/db:/app/data/db
       - ./data/csv:/app/data/csv
     environment:
