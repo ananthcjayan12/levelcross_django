@@ -25,7 +25,16 @@ class Command(BaseCommand):
         current_time_only = now.time()
 
         # Filter by day-of-week and window (past 3h to next 30m)
-        current_day = now.strftime('%A').upper()
+        day_map = {
+            'MONDAY': 'MO',
+            'TUESDAY': 'TU',
+            'WEDNESDAY': 'WE',
+            'THURSDAY': 'TH',
+            'FRIDAY': 'FR',
+            'SATURDAY': 'SA',
+            'SUNDAY': 'SU'
+        }
+        current_day = day_map[now.strftime('%A').upper()]
         day_filter = Q(week_day__icontains=current_day) | Q(week_day__iexact='ALL') | Q(week_day__iexact='DAILY')
         upcoming = Train.objects.filter(
             time__gte=three_hours_ago.time(),

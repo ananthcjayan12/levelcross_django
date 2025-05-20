@@ -1,4 +1,4 @@
-.PHONY: build up down logs shell static migrate makemigrations createsuperuser help restart
+.PHONY: build up down logs shell static migrate makemigrations createsuperuser help restart terminal
 
 help:
 	@echo "Available commands:"
@@ -12,6 +12,7 @@ help:
 	@echo "  make migrate      - Run database migrations"
 	@echo "  make makemigrations - Create new migrations"
 	@echo "  make createsuperuser - Create a superuser"
+	@echo "  make terminal     - Open a shell inside the web container"
 
 build:
 	docker-compose build
@@ -41,4 +42,7 @@ createsuperuser:
 	docker-compose exec web python manage.py createsuperuser 
 
 restart: down up
+
+terminal:
+	docker-compose exec web /bin/bash
 

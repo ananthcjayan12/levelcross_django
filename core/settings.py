@@ -204,4 +204,8 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'app.tasks.check_upcoming_trains_task',
         'schedule': crontab(minute='*/3'),
     },
+    'clear-crossed-trains-daily': {
+        'task': 'app.tasks.clear_crossed_trains_task',
+        'schedule': crontab(minute=0, hour=0),  # Every day at midnight
+    },
 }

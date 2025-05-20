@@ -24,8 +24,17 @@ def home(request):
     ist = pytz.timezone('Asia/Kolkata')
     now = timezone.localtime(timezone.now(), ist)
     
-    # Get current day name
-    current_day = now.strftime('%A').upper()
+    # Get current day name in two-letter format as in DB
+    day_map = {
+        'MONDAY': 'MO',
+        'TUESDAY': 'TU',
+        'WEDNESDAY': 'WE',
+        'THURSDAY': 'TH',
+        'FRIDAY': 'FR',
+        'SATURDAY': 'SA',
+        'SUNDAY': 'SU'
+    }
+    current_day = day_map[now.strftime('%A').upper()]
     
     # Get trains from past 3 hours and upcoming 30 minutes
     three_hours_ago = now - timedelta(hours=3)
